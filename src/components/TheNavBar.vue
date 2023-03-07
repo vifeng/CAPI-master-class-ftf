@@ -48,10 +48,12 @@
 
 <script setup>
 import { useAuthUsersStore } from "@/stores/AuthUsersStore";
+import { computed } from "vue";
+
 const authUsersStore = useAuthUsersStore();
-const authUser = authUsersStore.authUser;
+
+// computed properties
+const authUser = computed(() => authUsersStore.authUser);
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

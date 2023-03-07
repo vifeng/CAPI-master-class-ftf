@@ -4,11 +4,7 @@
       <div class="user-info">
         <a href="#" class="user-name">{{ userById(post.userId).name }}</a>
         <a href="#">
-          <img
-            class="avatar-large"
-            :src="userById(post.userId).avatar"
-            alt=""
-          />
+          <img class="avatar-large" :src="userById(post.userId).avatar" alt="" />
         </a>
         <p class="desktop-only text-small">107 posts</p>
       </div>
@@ -25,7 +21,7 @@
 </template>
 
 <script setup>
-import sourceData from "@/data.json";
+import { useUsersStore } from "@/stores/UsersStore";
 import { reactive } from "vue";
 
 // props
@@ -35,7 +31,8 @@ const props = defineProps({
     type: Array,
   },
 });
-const users = reactive(sourceData.users);
+const usersStore = useUsersStore();
+const users = reactive(usersStore.users);
 
 function userById(userId) {
   return users.find((p) => p.id === userId);
