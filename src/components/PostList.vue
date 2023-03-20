@@ -6,7 +6,12 @@
         <a href="#">
           <img class="avatar-large" :src="userById(post.userId).avatar" alt="" />
         </a>
-        <p class="desktop-only text-small">107 posts</p>
+        <p class="desktop-only text-small">
+          {{ userById(post.userId).postsCount }} posts
+        </p>
+        <p class="desktop-only text-small">
+          {{ userById(post.userId).threadsCount }} threads
+        </p>
       </div>
       <div class="post-content">
         <div>
@@ -23,7 +28,10 @@
 <script setup>
 import { useUsersStore } from "@/stores/UsersStore";
 import { reactive } from "vue";
+import { findById } from '@/helpers'
 
+const usersStore = useUsersStore();
+const users = reactive(usersStore.users);
 // props
 const props = defineProps({
   posts: {
@@ -31,11 +39,11 @@ const props = defineProps({
     type: Array,
   },
 });
-const usersStore = useUsersStore();
-const users = reactive(usersStore.users);
+
+// FIXME: Getters don't work in a loop.
 
 function userById(userId) {
-  return users.find((p) => p.id === userId);
+  return findById(users, userId);
 }
 </script>
 

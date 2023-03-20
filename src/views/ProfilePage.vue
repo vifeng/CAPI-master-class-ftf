@@ -27,7 +27,7 @@
 import PostList from "@/components/PostList.vue";
 import UserProfileCard from "@/components/UserProfileCard.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditor.vue";
-import { computed } from "vue";
+import { storeToRefs } from "pinia";
 
 // store
 import { useAuthUsersStore } from "@/stores/AuthUsersStore";
@@ -40,8 +40,6 @@ const props = defineProps({
     },
 });
 
-const authUsersStore = useAuthUsersStore();
+const { authUser } = storeToRefs(useAuthUsersStore());
 
-// computed properties
-const authUser = computed(() => authUsersStore.authUser);
 </script>

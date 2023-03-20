@@ -16,6 +16,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import Thenavbar from "@/components/TheNavBar.vue";
+
 </script>
 
 <style>

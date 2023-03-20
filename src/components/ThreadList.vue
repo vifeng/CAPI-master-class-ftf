@@ -6,29 +6,23 @@
       <div v-for="thread in threads" :key="thread.id" class="thread">
         <div>
           <p>
-            <router-link
-              :to="{ name: 'ThreadShow', params: { id: thread.id } }"
-            >
+            <router-link :to="{ name: 'ThreadShow', params: { id: thread.id } }">
               {{ thread.title }}
             </router-link>
           </p>
           <p class="text-faded text-xsmall">
-            By <a href="#">{{ userById(thread.userId).name }}</a
-            >, <app-date :timestamp="thread.publishedAt"></app-date>.
+            By <a href="#">{{ userById(thread.userId).name }}</a>, <app-date :timestamp="thread.publishedAt"></app-date>.
           </p>
         </div>
 
         <div class="activity">
           <p class="replies-count">
-            {{ thread.posts.length }}
-            {{ thread.posts.length > 1 ? "replies" : "reply" }}
+            {{ thread.repliesCount }}
+            {{ thread.repliesCount > 1 || thread.repliesCount
+              === 0 ? 'replies' : 'reply' }}
           </p>
 
-          <img
-            class="avatar-medium"
-            :src="userById(thread.userId).avatar"
-            alt=""
-          />
+          <img class="avatar-medium" :src="userById(thread.userId).avatar" alt="" />
 
           <div>
             <p class="text-xsmall">
@@ -45,9 +39,12 @@
 </template>
 
 <script setup>
-import sourceData from "@/data.json";
 import { reactive } from "vue";
-const users = reactive(sourceData.users);
+import { findById } from '@/helpers'
+import { useUsersStore } from "@/stores/UsersStore";
+
+const usersStore = useUsersStore();
+const users = reactive(usersStore.users);
 
 const props = defineProps({
   threads: {
@@ -56,9 +53,11 @@ const props = defineProps({
   },
 });
 
+
 function userById(userId) {
-  return users.find((p) => p.id === userId);
+  return findById(users, userId);
 }
+
 </script>
 
 <style scoped></style>

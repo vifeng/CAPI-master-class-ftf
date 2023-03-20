@@ -5,7 +5,7 @@
 
 <script setup>
 import ForumList from "@/components/ForumList.vue";
-import sourceData from "@/data.json";
+import { useForumsStore } from '@/stores/ForumsStore.js'
 // props
 const props = defineProps({
   categories: {
@@ -14,12 +14,12 @@ const props = defineProps({
   },
 });
 
+const forumsStore = useForumsStore();
+
 // functions
 function getForumsForCategory(category) {
-  return sourceData.forums.filter((forum) => forum.categoryId === category.id);
+  return forumsStore.forums.filter((forum) => forum.categoryId === category.id);
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

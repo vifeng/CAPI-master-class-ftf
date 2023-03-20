@@ -5,7 +5,10 @@
 <script setup>
 import { computed } from "vue";
 import ForumList from "@/components/ForumList.vue";
-import sourceData from "@/data.json";
+import useCategoriesStore from '@/stores/CategoriesStore.js'
+import { useForumsStore } from "../stores/ForumsStore";
+
+import { findById } from '@/helpers'
 
 // props
 const props = defineProps({
@@ -15,12 +18,15 @@ const props = defineProps({
   },
 });
 
+const categoriesStore = useCategoriesStore();
+const forumsStore = useForumsStore();
+
 // computed properties
 const category = computed(() =>
-  sourceData.categories.find((category) => category.id === props.id)
+  findById(categoriesStore.categories, props.id)
 );
 
 const categoryForums = computed(() =>
-  sourceData.forums.filter((forum) => forum.categoryId === props.id)
+  forumsStore.forums.filter((forum) => forum.categoryId === props.id)
 );
 </script>

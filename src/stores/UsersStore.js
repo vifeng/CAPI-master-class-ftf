@@ -2,17 +2,24 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import sourceData from "@/data.json";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
+import { findById, upsert } from "@/helpers";
 
 export const useUsersStore = defineStore("UsersStore", {
   state: () => {
     return {
       users: sourceData.users,
       id: "VXjpr2WHa8Ux4Bnggym8QFLdv5C3",
+      setUser(activeUser, activeUserId) {
+        const userIndex = this.users.findIndex(
+          (user) => user.id === activeUserId
+        );
+        this.users[userIndex] = activeUser;
+      },
     };
   },
   getters: {
     user: (state) => {
-      const user = state.users.find((user) => user.id === state.id);
+      const user = findById(state.users, state.id);
       if (!user) return null;
       const postsStore = usePostsStore();
       const posts = postsStore.posts;
@@ -21,7 +28,7 @@ export const useUsersStore = defineStore("UsersStore", {
 
       return {
         ...user,
-        // this can used as {{ authUser.postsCount }} or {{ authUser.getPostsCount() }}
+        // this can used as {{ user.postsCount }} or {{ user.getPostsCount() }}
         get posts() {
           return posts.filter((post) => post.userId === user.id);
         },
@@ -39,11 +46,7 @@ export const useUsersStore = defineStore("UsersStore", {
   },
   actions: {
     updateUser(activeUser) {
-      // this.setUser(activeUser, activeUser.id);
-      const userIndex = this.users.findIndex(
-        (user) => user.id === activeUser.id
-      );
-      this.users[userIndex] = activeUser;
+      this.setUser(activeUser, activeUser.id);
     },
   },
 });

@@ -17,7 +17,6 @@ import { ref } from "vue";
 const emit = defineEmits(["save"]);
 const postText = ref("");
 
-// let postText = "";
 
 function save() {
   const post = {
@@ -25,10 +24,10 @@ function save() {
   };
   emit("save", { post });
   // access under eventData.post
-  // this will send the data object post to the parent child
+  // this will send the data object post to the parent child see threadShow.vue
+  console.log("post créé " + postText.value);
   postText.value = "";
   // bug text isn't erased
-  console.log("et alors ? " + postText.value);
 }
 </script>
 

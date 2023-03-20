@@ -2,11 +2,15 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import sourceData from "@/data.json";
 import { useThreadsStore } from "./ThreadsStore";
 import { useAuthUsersStore } from "./AuthUsersStore";
+import { findById, upsert } from "@/helpers";
 
 export const usePostsStore = defineStore("PostsStore", {
   state: () => {
     return {
       posts: sourceData.posts,
+      setPost(post) {
+        upsert(this.posts, post);
+      },
     };
   },
   getters: {},
@@ -16,12 +20,20 @@ export const usePostsStore = defineStore("PostsStore", {
       const authUsersStore = useAuthUsersStore();
       post.userId = authUsersStore.authId;
       post.publishedAt = Math.floor(Date.now() / 1000);
-      this.posts.push(post);
+      // setPost
+      this.setPost(post);
       // append post to thread
-      const thread = useThreadsStore().threads.find(
-        (thread) => thread.id === post.threadId
-      );
-      thread.posts.push(post.id);
+      const thread = findById(useThreadsStore().threads, post.threadId);
+      thread.posts = thread.posts || [];
+      if (!thread.posts.includes(post.id)) {
+        thread.posts.push(post.id);
+      }
+      // append contributor to thread
+      thread.contributors = thread.contributors || [];
+      if (!thread.contributors.includes(post.userId)) {
+        // if the user is not already in the contributors list
+        thread.contributors.push(post.userId);
+      }
     },
   },
 });

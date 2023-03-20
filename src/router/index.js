@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import ThreadShow from "@/views/ThreadShow.vue";
+import { findById } from "@/helpers";
 
 import sourceData from "@/data.json";
 const routes = [
@@ -42,9 +43,7 @@ const routes = [
     props: true,
     beforeEnter(to, from, next) {
       // check if thread exists
-      const threadExists = sourceData.threads.find(
-        (thread) => thread.id === to.params.id
-      );
+      const threadExists = findById(sourceData.threads, to.params.id);
       // if exists continue
       if (threadExists) {
         return next();
@@ -60,6 +59,18 @@ const routes = [
       }
       // if doesnt exist redirect to not found
     },
+  },
+  {
+    path: "/forum/:forumId/thread/create",
+    name: "ThreadCreate",
+    component: () => import("@/views/ThreadCreate.vue"),
+    props: true,
+  },
+  {
+    path: "/thread/:id/edit",
+    name: "ThreadEdit",
+    component: () => import("@/views/ThreadEdit.vue"),
+    props: true,
   },
   {
     path: "/:pathMatch(.*)*",

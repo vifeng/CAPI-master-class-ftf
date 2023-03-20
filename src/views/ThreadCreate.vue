@@ -3,41 +3,45 @@
         <h1>
             Create new thread in <i>{{ forum.name }}</i>
         </h1>
-
-        <form @submit.prevent="save">
-            <div class="form-group">
-                <label for="thread_title">Title:</label>
-                <input v-model="title" type="text" id="thread_title" class="form-input" name="title" />
-            </div>
-
-            <div class="form-group">
-                <label for="thread_content">Content:</label>
-                <textarea v-model="text" id="thread_content" class="form-input" name="content" rows="8"
-                    cols="140"></textarea>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-ghost">Cancel</button>
-                <button class="btn btn-blue" type="submit" name="Publish">
-                    Publish
-                </button>
-            </div>
-        </form>
+        <ThreadEditor @save="save" @cancel="cancel"></ThreadEditor>
     </div>
 </template>
 
 <script setup>
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import ThreadEditor from "../components/ThreadEditor.vue";
+import { useThreadsStore } from "../stores/ThreadsStore";
+import { useForumsStore } from "../stores/ForumsStore";
+import { findById } from '@/helpers'
+
 // props
 const props = defineProps({
-    forum: { type: Object, required: true },
+    forumId: { type: String, required: true },
 });
+
 // data
-const title = "";
-const text = "";
+const threadsStore = useThreadsStore();
+const forumsStore = useForumsStore();
+const router = useRouter();
+
+// computed
+const forum = computed(() =>
+    findById(forumsStore.forums, props.forumId)
+);
 
 // action
-function save() {
-    // 
-},
+async function save(eventData) {
+    const threadForm = {
+        ...eventData.form,
+        // carefull if you emit("save", { form }); then you have to call form 
+        forumId: props.forumId,
+    };
+    const thread = await threadsStore.createThread(threadForm);
+    router.push({ name: "ThreadShow", params: { id: thread.id } });
+}
 
+function cancel() {
+    router.push({ name: "Forum", params: { id: props.forumId } });
+}
 </script>

@@ -48,12 +48,10 @@
 
 <script setup>
 import { useAuthUsersStore } from "@/stores/AuthUsersStore";
-import { computed } from "vue";
+import { storeToRefs } from "pinia";
 
-const authUsersStore = useAuthUsersStore();
+const { authUser } = storeToRefs(useAuthUsersStore());
 
-// computed properties
-const authUser = computed(() => authUsersStore.authUser);
 </script>
 
 <style scoped></style>
